@@ -1,4 +1,5 @@
-﻿using AnimalSpawn.Domain.DTOs;
+﻿using AnimalSpawn.Api.Responses;
+using AnimalSpawn.Domain.DTOs;
 using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.Interfaces;
 using AutoMapper;
@@ -28,8 +29,8 @@ namespace AnimalSpawn.Api.Controllers
         {   
             var animals =  await _repository.GetAnimals();            
             var animalsDto = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResponseDto>>(animals);
-
-            return Ok(animalsDto);
+            var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto);
+            return Ok(response);
         }
 
         [HttpGet("{id:int}")]
@@ -37,8 +38,8 @@ namespace AnimalSpawn.Api.Controllers
         {
             var animal = await _repository.GetAnimal(id);            
             var animalDto = _mapper.Map<Animal, AnimalResponseDto>(animal);
-
-            return Ok(animalDto);
+            var response = new ApiResponse<AnimalResponseDto>(animalDto);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -47,9 +48,28 @@ namespace AnimalSpawn.Api.Controllers
             var animal = _mapper.Map<AnimalRequestDto, Animal>(animalDto);
             await _repository.AddAnimal(animal);            
             var animalresponseDto = _mapper.Map<Animal, AnimalResponseDto>(animal);
-
-            return Ok(animalresponseDto);  
+            var response = new ApiResponse<AnimalResponseDto>(animalresponseDto);
+            return Ok(response);  
         }
 
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var result = await _repository.DeleteAnimal(id);
+            var response = new ApiResponse<bool>(result);
+            return Ok(response);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(int id, AnimalRequestDto animalDto)
+        {
+            var animal = _mapper.Map<Animal>(animalDto);
+            animal.Id = id;
+            animal.UpdateAt = DateTime.Now;
+            animal.UpdatedBy = 2;
+            var result = await _repository.UpdateAnimal(animal);
+            var response = new ApiResponse<bool>(result);
+            return Ok(response);
+        }
     }
 }

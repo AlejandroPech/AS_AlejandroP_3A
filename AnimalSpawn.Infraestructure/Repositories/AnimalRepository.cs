@@ -31,5 +31,29 @@ namespace AnimalSpawn.Infraestructure.Repositories
             context.Animal.Add(animal);
             await context.SaveChangesAsync();
         }
+
+        public async Task<bool> UpdateAnimal(Animal animal)
+        {
+            var current = await GetAnimal(animal.Id);
+            current.GenusId = animal.GenusId;
+            current.FamilyId = animal.FamilyId;
+            current.Description = animal.Description;
+            current.EstimatedAge = animal.EstimatedAge;
+            current.Gender = animal.Gender;
+            current.Height = animal.Height;
+            current.Name = animal.Name;
+            current.Photo = animal.Photo;
+            current.SpeciesId = animal.SpeciesId;
+            var rowsUpdate = await context.SaveChangesAsync();
+            return rowsUpdate > 0;
+        }
+
+        public async Task<bool> DeleteAnimal(int id)
+        {
+            var current = await GetAnimal(id);
+            context.Animal.Remove(current);
+            var rowsDelete = await context.SaveChangesAsync();
+            return rowsDelete > 0;
+        }
     }
 }

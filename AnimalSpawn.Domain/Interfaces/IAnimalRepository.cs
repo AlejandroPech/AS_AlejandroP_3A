@@ -9,5 +9,7 @@ namespace AnimalSpawn.Domain.Interfaces
         Task<IEnumerable<Animal>> GetAnimals();
         Task<Animal> GetAnimal(int id);
         Task AddAnimal(Animal animal);
+        Task<bool> UpdateAnimal(Animal animal);
+        Task<bool> DeleteAnimal(int id);
     }
 }
