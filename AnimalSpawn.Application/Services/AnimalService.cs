@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AnimalSpawn.Domain.Entities;
@@ -9,16 +10,18 @@ namespace AnimalSpawn.Application.Services
 {
     public class AnimalService : IAnimalService
     {
-        private readonly IAnimalRepository _repository;
-        public AnimalService(IAnimalRepository repository)
+        private readonly IUnitOfWork _unitOfWork;
+        public AnimalService(IUnitOfWork unitOfWork)
         {
-            this._repository = repository;
+            this._unitOfWork = unitOfWork;
         }
 
 
         public async Task AddAnimal(Animal animal)
         {
-            var animals = await _repository.GetAnimals();
+            Expression<Func<Animal,bool>> expressionAnimal = item => item.Name == animal.Name;
+
+            var animals = await _unitOfWork.AnimalRepository.FindByCondition(expressionAnimal);
 
             if (animals.Any(item => item.Name == animal.Name))
                 throw new Exception("This animal name already exist.");
@@ -31,27 +34,35 @@ namespace AnimalSpawn.Application.Services
             if (older.TotalDays > 45)
                 throw new Exception("The animal's capture date is older than 45 days");
 
-            await _repository.AddAnimal(animal);
+            if (animal.RfidTag != null)
+            {
+                Expression<Func<RfidTag, bool>> expressionTag = tag => tag.Tag == animal.RfidTag.Tag;
+                var tags = await _unitOfWork.RfifTagRepository.FindByCondition(expressionTag);
+                if (tags.Any())
+                    throw new Exception("This animal's tag rfid is already exist");
+            }                  
+
+            await _unitOfWork.AnimalRepository.Add(animal);
         }
 
-        public async Task<bool> DeleteAnimal(int id)
+        public async Task DeleteAnimal(int id)
         {
-            return await _repository.DeleteAnimal(id);
+            await _unitOfWork.AnimalRepository.Delete(id);
         }
 
         public async Task<Animal> GetAnimal(int id)
         {
-            return await _repository.GetAnimal(id);
+            return await _unitOfWork.AnimalRepository.GetById(id);
         }
 
         public async Task<IEnumerable<Animal>> GetAnimals()
         {
-            return await _repository.GetAnimals();
+            return await _unitOfWork.AnimalRepository.GetAll();
         }
 
-        public async Task<bool> UpdateAnimal(Animal animal)
+        public async Task UpdateAnimal(Animal animal)
         {
-            return await _repository.UpdateAnimal(animal);
+            await _unitOfWork.AnimalRepository.Update(animal);
         }
     }
 }

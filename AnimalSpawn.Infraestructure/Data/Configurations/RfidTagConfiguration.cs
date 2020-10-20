@@ -33,6 +33,11 @@ namespace AnimalSpawn.Infraestructure.Data.Configurations
                 .HasForeignKey(d => d.ProtectedAreaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RFIdTag_1");
+
+            builder.Ignore(d => d.CreateAt);
+            builder.Ignore(d => d.CreatedBy);
+            builder.Ignore(d => d.UpdateAt);
+            builder.Ignore(d => d.Status);
         }
     }
 }

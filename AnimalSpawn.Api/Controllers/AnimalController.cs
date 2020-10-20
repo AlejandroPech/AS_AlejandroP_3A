@@ -18,9 +18,9 @@ namespace AnimalSpawn.Api.Controllers
     {
         private readonly IAnimalService _service;
         private readonly IMapper _mapper;
-        public AnimalController(IAnimalService repository, IMapper _mapper)
+        public AnimalController(IAnimalService service, IMapper _mapper)
         {
-            _service = repository;
+            this._service = service;
             this._mapper = _mapper;
         }
 
@@ -55,8 +55,8 @@ namespace AnimalSpawn.Api.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await _service.DeleteAnimal(id);
-            var response = new ApiResponse<bool>(result);
+            await _service.DeleteAnimal(id);
+            var response = new ApiResponse<bool>(true);
             return Ok(response);
         }
 
@@ -67,8 +67,8 @@ namespace AnimalSpawn.Api.Controllers
             animal.Id = id;
             animal.UpdateAt = DateTime.Now;
             animal.UpdatedBy = 2;
-            var result = await _service.UpdateAnimal(animal);
-            var response = new ApiResponse<bool>(result);
+            await _service.UpdateAnimal(animal);
+            var response = new ApiResponse<bool>(true);
             return Ok(response);
         }
     }

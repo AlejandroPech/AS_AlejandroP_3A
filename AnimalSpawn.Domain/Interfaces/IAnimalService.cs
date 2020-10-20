@@ -9,9 +9,9 @@ namespace AnimalSpawn.Domain.Interfaces
     public interface IAnimalService
     {
         Task AddAnimal(Animal animal);
-        Task<bool> DeleteAnimal(int id);
+        Task DeleteAnimal(int id);
         Task<IEnumerable<Animal>> GetAnimals();
         Task<Animal> GetAnimal(int id);
-        Task<bool> UpdateAnimal(Animal animal);
+        Task UpdateAnimal(Animal animal);
     }
 }

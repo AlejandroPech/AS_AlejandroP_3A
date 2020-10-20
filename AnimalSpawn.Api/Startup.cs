@@ -34,13 +34,18 @@ namespace AnimalSpawn.Api
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            
+
             services.AddControllers();
             services.AddDbContext<AnimalSpawnContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("EFDbConnection"))
             );
 
-            services.AddTransient<IAnimalRepository, AnimalRepository>();
+            //services.AddTransient<IAnimalRepository, AnimalRepository>();
             services.AddTransient<IAnimalService, AnimalService>();
+            services.AddScoped(typeof(IRepository<>), typeof(SQLRepository<>));
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddMvc().AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));

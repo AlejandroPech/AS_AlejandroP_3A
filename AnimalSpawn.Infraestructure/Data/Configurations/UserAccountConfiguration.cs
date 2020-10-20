@@ -29,6 +29,11 @@ namespace AnimalSpawn.Infraestructure.Data.Configurations
                 .HasForeignKey<UserAccount>(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserAccount_0");
+
+            builder.Ignore(d => d.CreateAt);
+            builder.Ignore(d => d.CreatedBy);
+            builder.Ignore(d => d.UpdateAt);
+            builder.Ignore(d => d.Status);
         }
     }
 }
