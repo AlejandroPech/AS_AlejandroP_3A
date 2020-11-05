@@ -26,8 +26,9 @@ namespace AnimalSpawn.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Get()
-        {   
-            var animals =  await _service.GetAnimals();            
+        {
+            await Task.Delay(10);
+            var animals =  _service.GetAnimals();            
             var animalsDto = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResponseDto>>(animals);
             var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto);
             return Ok(response);
@@ -35,7 +36,7 @@ namespace AnimalSpawn.Api.Controllers
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
-        {
+        {            
             var animal = await _service.GetAnimal(id);            
             var animalDto = _mapper.Map<Animal, AnimalResponseDto>(animal);
             var response = new ApiResponse<AnimalResponseDto>(animalDto);
@@ -63,11 +64,12 @@ namespace AnimalSpawn.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, AnimalRequestDto animalDto)
         {
+            await Task.Delay(10);
             var animal = _mapper.Map<Animal>(animalDto);
             animal.Id = id;
             animal.UpdateAt = DateTime.Now;
             animal.UpdatedBy = 2;
-            await _service.UpdateAnimal(animal);
+            _service.UpdateAnimal(animal);
             var response = new ApiResponse<bool>(true);
             return Ok(response);
         }

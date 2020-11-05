@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AnimalSpawn.Domain.Entities;
+using AnimalSpawn.Domain.Exceptions;
 using AnimalSpawn.Domain.Interfaces;
 namespace AnimalSpawn.Application.Services
 {
@@ -21,25 +22,25 @@ namespace AnimalSpawn.Application.Services
         {
             Expression<Func<Animal,bool>> expressionAnimal = item => item.Name == animal.Name;
 
-            var animals = await _unitOfWork.AnimalRepository.FindByCondition(expressionAnimal);
+            var animals = _unitOfWork.AnimalRepository.FindByCondition(expressionAnimal);
 
             if (animals.Any(item => item.Name == animal.Name))
-                throw new Exception("This animal name already exist.");
+                throw new BusinessException("This animal name already exist.");
 
             if (animal?.EstimatedAge > 0 && (animal?.Weight <= 0 || animal?.Height <= 0))
-                throw new Exception("The height and weight should be greater than zero.");
+                throw new BusinessException("The height and weight should be greater than zero.");
 
             var older = DateTime.Now - (animal?.CaptureDate ?? DateTime.Now);
 
             if (older.TotalDays > 45)
-                throw new Exception("The animal's capture date is older than 45 days");
+                throw new BusinessException("The animal's capture date is older than 45 days");
 
             if (animal.RfidTag != null)
             {
                 Expression<Func<RfidTag, bool>> expressionTag = tag => tag.Tag == animal.RfidTag.Tag;
-                var tags = await _unitOfWork.RfifTagRepository.FindByCondition(expressionTag);
+                var tags = _unitOfWork.RfifTagRepository.FindByCondition(expressionTag);
                 if (tags.Any())
-                    throw new Exception("This animal's tag rfid is already exist");
+                    throw new BusinessException("This animal's tag rfid is already exist");
             }                  
 
             await _unitOfWork.AnimalRepository.Add(animal);
@@ -48,6 +49,7 @@ namespace AnimalSpawn.Application.Services
         public async Task DeleteAnimal(int id)
         {
             await _unitOfWork.AnimalRepository.Delete(id);
+            await _unitOfWork.SavechangesAsync();
         }
 
         public async Task<Animal> GetAnimal(int id)
@@ -55,14 +57,15 @@ namespace AnimalSpawn.Application.Services
             return await _unitOfWork.AnimalRepository.GetById(id);
         }
 
-        public async Task<IEnumerable<Animal>> GetAnimals()
+        public IEnumerable<Animal> GetAnimals()
         {
-            return await _unitOfWork.AnimalRepository.GetAll();
+            return _unitOfWork.AnimalRepository.GetAll();
         }
 
-        public async Task UpdateAnimal(Animal animal)
+        public void UpdateAnimal(Animal animal)
         {
-            await _unitOfWork.AnimalRepository.Update(animal);
+            _unitOfWork.AnimalRepository.Update(animal);
+            _unitOfWork.SaveChanges();
         }
     }
 }

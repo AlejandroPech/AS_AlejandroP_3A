@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AnimalSpawn.Application.Services;
 using AnimalSpawn.Domain.Interfaces;
 using AnimalSpawn.Infraestructure.Data;
+using AnimalSpawn.Infraestructure.Filters;
 using AnimalSpawn.Infraestructure.Repositories;
 using AutoMapper;
 using FluentValidation.AspNetCore;
@@ -34,7 +35,10 @@ namespace AnimalSpawn.Api
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            
+            services.AddControllers(options =>
+                options.Filters.Add<GlobalExceptionFilter>()
+                );
+
 
             services.AddControllers();
             services.AddDbContext<AnimalSpawnContext>(options =>

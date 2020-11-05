@@ -10,10 +10,10 @@ namespace AnimalSpawn.Domain.Interfaces
     public interface IRepository<T> where T:BaseEntity
     {
         Task Add(T entity);
-        Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression);
+        IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression);
         Task<T> GetById(int id);
-        Task<IEnumerable<T>> GetAll();
+        IEnumerable<T> GetAll();
         Task Delete(int id);
-        Task Update(T entity);
+        void Update(T entity);
     }
 }
