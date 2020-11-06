@@ -50,6 +50,7 @@ namespace AnimalSpawn.Api
             services.AddScoped(typeof(IRepository<>), typeof(SQLRepository<>));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAnimalRepository, AnimalRepository>();
 
             services.AddMvc().AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));

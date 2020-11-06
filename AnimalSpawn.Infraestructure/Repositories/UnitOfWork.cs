@@ -12,7 +12,7 @@ namespace AnimalSpawn.Infraestructure.Repositories
     {
         private readonly AnimalSpawnContext _context;
 
-        private readonly IRepository<Animal> _animalRepository;
+        private readonly IAnimalRepository _animalRepository;
         private readonly IRepository<Country> _countryRepository;
         private readonly IRepository<Family> _familyRepository;
         private readonly IRepository<Genus> _genusRepository;
@@ -30,8 +30,8 @@ namespace AnimalSpawn.Infraestructure.Repositories
         }
 
 
-        public IRepository<Animal> AnimalRepository => _animalRepository ?? new
-        SQLRepository<Animal>(_context);
+        public IAnimalRepository AnimalRepository => _animalRepository ?? new
+        AnimalRepository(_context);
         public IRepository<Country> CountryRepository => _countryRepository ?? new
         SQLRepository<Country>(_context);
         public IRepository<Family> FamilyRepository => _familyRepository ?? new

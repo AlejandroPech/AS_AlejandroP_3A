@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.Exceptions;
 using AnimalSpawn.Domain.Interfaces;
+using AnimalSpawn.Domain.QueryFilters;
+
 namespace AnimalSpawn.Application.Services
 {
     public class AnimalService : IAnimalService
@@ -57,9 +59,10 @@ namespace AnimalSpawn.Application.Services
             return await _unitOfWork.AnimalRepository.GetById(id);
         }
 
-        public IEnumerable<Animal> GetAnimals()
+        public IEnumerable<Animal> GetAnimals(AnimalQueryFilter filter)
         {
-            return _unitOfWork.AnimalRepository.GetAll();
+            var animals= _unitOfWork.AnimalRepository.GetAnimals(filter);
+            return animals;
         }
 
         public void UpdateAnimal(Animal animal)

@@ -2,6 +2,7 @@
 using AnimalSpawn.Domain.DTOs;
 using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.Interfaces;
+using AnimalSpawn.Domain.QueryFilters;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -25,10 +26,9 @@ namespace AnimalSpawn.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get([FromQuery]AnimalQueryFilter filter)
         {
-            await Task.Delay(10);
-            var animals =  _service.GetAnimals();            
+            var animals =  _service.GetAnimals(filter);            
             var animalsDto = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResponseDto>>(animals);
             var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto);
             return Ok(response);

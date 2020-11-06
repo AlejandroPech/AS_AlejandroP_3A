@@ -1,7 +1,6 @@
 ﻿using AnimalSpawn.Domain.Entities;
-using System;
+using AnimalSpawn.Domain.QueryFilters;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AnimalSpawn.Domain.Interfaces
@@ -10,7 +9,7 @@ namespace AnimalSpawn.Domain.Interfaces
     {
         Task AddAnimal(Animal animal);
         Task DeleteAnimal(int id);
-        IEnumerable<Animal> GetAnimals();
+        IEnumerable<Animal> GetAnimals(AnimalQueryFilter filter);
         Task<Animal> GetAnimal(int id);
         void UpdateAnimal(Animal animal);
     }
