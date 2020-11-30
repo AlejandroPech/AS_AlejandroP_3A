@@ -2,6 +2,7 @@
 using AnimalSpawn.Domain.DTOs;
 using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.Interfaces;
+using AnimalSpawn.Domain.NavigationEntities;
 using AnimalSpawn.Domain.QueryFilters;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,17 @@ namespace AnimalSpawn.Api.Controllers
         {
             var animals =  _service.GetAnimals(filter);            
             var animalsDto = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResponseDto>>(animals);
-            var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto);
+            var meta = new Metadata
+            {
+                CurrentPage = animals.CurrentPage,
+                HasNextPage = animals.HasNextPage,
+                HasPreviusPage = animals.HasPreviusPage,
+                PageSize = animals.PageSize,
+                TotalCount = animals.TotalCount,
+                TotalPage = animals.TotalPages
+            };
+
+            var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto,meta);
             return Ok(response);
         }
 

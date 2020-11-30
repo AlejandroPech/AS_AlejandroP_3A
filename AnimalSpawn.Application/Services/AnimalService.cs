@@ -7,16 +7,21 @@ using System.Threading.Tasks;
 using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.Exceptions;
 using AnimalSpawn.Domain.Interfaces;
+using AnimalSpawn.Domain.NavigationEntities;
+using AnimalSpawn.Domain.NavigationEntities.Options;
 using AnimalSpawn.Domain.QueryFilters;
+using Microsoft.Extensions.Options;
 
 namespace AnimalSpawn.Application.Services
 {
     public class AnimalService : IAnimalService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public AnimalService(IUnitOfWork unitOfWork)
+        private readonly PaginationOption _options;
+        public AnimalService(IUnitOfWork unitOfWork,IOptions<PaginationOption> options)
         {
             this._unitOfWork = unitOfWork;
+            this._options = options.Value;
         }
 
 
@@ -59,10 +64,13 @@ namespace AnimalSpawn.Application.Services
             return await _unitOfWork.AnimalRepository.GetById(id);
         }
 
-        public IEnumerable<Animal> GetAnimals(AnimalQueryFilter filter)
+        public PagedList<Animal> GetAnimals(AnimalQueryFilter filter)
         {
-            var animals= _unitOfWork.AnimalRepository.GetAnimals(filter);
-            return animals;
+            var pageNumber = filter.PageNumber == 0 ? _options.DefaultPageNumber : filter.PageNumber;
+            var pageSize = filter.PageSize == 0 ? _options.DefaultPageSize : filter.PageSize;
+
+            var animals = _unitOfWork.AnimalRepository.GetAnimals(filter);
+            return PagedList<Animal>.Create(animals, pageNumber, pageSize);
         }
 
         public void UpdateAnimal(Animal animal)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AnimalSpawn.Application.Services;
 using AnimalSpawn.Domain.Interfaces;
+using AnimalSpawn.Domain.NavigationEntities.Options;
 using AnimalSpawn.Infraestructure.Data;
 using AnimalSpawn.Infraestructure.Filters;
 using AnimalSpawn.Infraestructure.Repositories;
@@ -40,7 +41,12 @@ namespace AnimalSpawn.Api
                 );
 
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                 options.Filters.Add<GlobalExceptionFilter>()
+                 ).AddJsonOptions(options => {
+                     options.JsonSerializerOptions.IgnoreNullValues = true;
+                     options.JsonSerializerOptions.WriteIndented = true;
+                 });
             services.AddDbContext<AnimalSpawnContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("EFDbConnection"))
             );
@@ -54,6 +60,10 @@ namespace AnimalSpawn.Api
 
             services.AddMvc().AddFluentValidation(options =>
                     options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+            services.Configure<PaginationOption>(Configuration.GetSection("Pagination"));
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

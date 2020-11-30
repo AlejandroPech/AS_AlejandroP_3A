@@ -34,14 +34,14 @@ namespace AnimalSpawn.Infraestructure.Repositories
             _entities.Remove(entity);
         }
 
-        public IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return _entities.Where(expression).AsNoTracking().AsEnumerable();
+            return _entities.Where(expression).AsNoTracking().AsQueryable();
         }
 
-        public IEnumerable<T> GetAll()
+        public IQueryable<T> GetAll()
         {
-            return _entities.AsNoTracking().AsEnumerable();
+            return _entities.AsNoTracking().AsQueryable();
         }
 
         public async Task<T> GetById(int id)

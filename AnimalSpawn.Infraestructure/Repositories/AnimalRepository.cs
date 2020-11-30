@@ -4,9 +4,8 @@ using AnimalSpawn.Domain.QueryFilters;
 using AnimalSpawn.Infraestructure.Data;
 using LinqKit;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace AnimalSpawn.Infraestructure.Repositories
 {
@@ -18,7 +17,7 @@ namespace AnimalSpawn.Infraestructure.Repositories
             _context = context;
         }
 
-        public IEnumerable<Animal> GetAnimals(AnimalQueryFilter filter)
+        public IQueryable<Animal> GetAnimals(AnimalQueryFilter filter)
         {
             Expression<Func<Animal, bool>> expression = animal => animal.Id > 0;
             if(!string.IsNullOrEmpty(filter.Name) && !string.IsNullOrWhiteSpace(filter.Name))

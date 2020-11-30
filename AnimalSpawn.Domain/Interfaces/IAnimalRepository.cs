@@ -1,13 +1,11 @@
 ﻿using AnimalSpawn.Domain.Entities;
 using AnimalSpawn.Domain.QueryFilters;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace AnimalSpawn.Domain.Interfaces
 {
     public interface IAnimalRepository:IRepository<Animal>
     {
-        public IEnumerable<Animal> GetAnimals(AnimalQueryFilter filter);
+        public IQueryable<Animal> GetAnimals(AnimalQueryFilter filter);
     }
 }

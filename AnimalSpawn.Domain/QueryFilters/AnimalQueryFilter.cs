@@ -13,5 +13,8 @@ namespace AnimalSpawn.Domain.QueryFilters
         public DateTime? CaptureDateMin { get; set; }
         public DateTime? CaptureDateMax { get; set; }
         public string RfTag { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+
     }
 }
